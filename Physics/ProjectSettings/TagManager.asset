@@ -4,10 +4,7 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - YellowDonut
-  - RedDonut
-  - BlueDonut
-  - GreenDonut
+  - Spike
   layers:
   - Default
   - TransparentFX
