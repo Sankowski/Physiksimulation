@@ -12,10 +12,13 @@ public class PlayerController : MonoBehaviour
     public GameObject sliderUiLeft;
     public GameObject rightEye;
     public GameObject leftEye;
+    public GameObject leftLid;
+    public GameObject rightLid;
 
     public Material material;
 
     public Rigidbody projectile;
+    // public Rigidbody bubble;
 
     public Slider leftSlider;
     public Slider rightSlider;
@@ -67,6 +70,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        eyelidMover();
         leftEye.transform.LookAt(spike.transform.position);
         rightEye.transform.LookAt(spike.transform.position);
 
@@ -184,7 +188,15 @@ public class PlayerController : MonoBehaviour
             Rigidbody projectileCloneSideWartsTwo;
             Rigidbody projectileCloneSideWartsThree;
             Rigidbody projectileCloneSideWartsFour;
-            Rigidbody cprojectileCloneSideWartsFive;
+            Rigidbody projectileCloneSideWartsFive;
+            // Rigidbody bubbleClone;
+
+            //  for (int i = 0; i < 8; i++)
+            //  {
+            //      bubbleClone = Instantiate(bubble, new Vector3(-3.068f + i, -7.37f, -6.8f), transform.rotation) as Rigidbody;
+            //      bubbleClone.AddForce(Vector3.up * sliderLeft, ForceMode.Impulse);
+            //      StartCoroutine(destroyBubble(bubbleClone));
+            //  }
 
             projectileClone = Instantiate(projectile, new Vector3(-3.068f, -7.37f, -6.281f), transform.rotation) as Rigidbody;
             projectileCloneOne = Instantiate(projectile, new Vector3(-4.57f, -7.37f, -6.281f), transform.rotation) as Rigidbody;
@@ -198,7 +210,7 @@ public class PlayerController : MonoBehaviour
             projectileCloneSideWartsTwo = Instantiate(projectile, new Vector3(-6.7f, -5.356f, -6.281f), transform.rotation) as Rigidbody;
             projectileCloneSideWartsThree = Instantiate(projectile, new Vector3(-6.256f, -5.856f, -6.281f), transform.rotation) as Rigidbody;
             projectileCloneSideWartsFour = Instantiate(projectile, new Vector3(-5.756f, -6.356f, -6.281f), transform.rotation) as Rigidbody;
-            cprojectileCloneSideWartsFive = Instantiate(projectile, new Vector3(-5.256f, -6.856f, -6.281f), transform.rotation) as Rigidbody;
+            projectileCloneSideWartsFive = Instantiate(projectile, new Vector3(-5.256f, -6.856f, -6.281f), transform.rotation) as Rigidbody;
 
             projectileClone.AddForce(Vector3.up * sliderLeft, ForceMode.Impulse);
             projectileCloneOne.AddForce(Vector3.up * sliderLeft, ForceMode.Impulse);
@@ -208,12 +220,13 @@ public class PlayerController : MonoBehaviour
             projectileCloneFive.AddForce(Vector3.up * sliderLeft, ForceMode.Impulse);
             projectileCloneSix.AddForce(Vector3.up * sliderLeft, ForceMode.Impulse);
 
-            StartCoroutine(destroyProjectile(projectileClone));
             projectileCloneSideWartsOne.AddForce(new Vector3(ForceSidewardsLeftX, ForceSidewardsY, 0) * sliderLeft, ForceMode.Impulse);
             projectileCloneSideWartsTwo.AddForce(new Vector3(ForceSidewardsLeftX, ForceSidewardsY, 0) * sliderLeft, ForceMode.Impulse);
             projectileCloneSideWartsThree.AddForce(new Vector3(ForceSidewardsLeftX, ForceSidewardsY, 0) * sliderLeft, ForceMode.Impulse);
             projectileCloneSideWartsFour.AddForce(new Vector3(ForceSidewardsLeftX, ForceSidewardsY, 0) * sliderLeft, ForceMode.Impulse);
-            cprojectileCloneSideWartsFive.AddForce(new Vector3(ForceSidewardsLeftX, ForceSidewardsY, 0) * sliderLeft, ForceMode.Impulse);
+            projectileCloneSideWartsFive.AddForce(new Vector3(ForceSidewardsLeftX, ForceSidewardsY, 0) * sliderLeft, ForceMode.Impulse);
+
+            //StartCoroutine(destroyProjectile(projectileClone));
 
             StartCoroutine(destroyProjectile(projectileClone));
             StartCoroutine(destroyProjectile(projectileCloneOne));
@@ -227,7 +240,7 @@ public class PlayerController : MonoBehaviour
             StartCoroutine(destroyProjectile(projectileCloneSideWartsTwo));
             StartCoroutine(destroyProjectile(projectileCloneSideWartsThree));
             StartCoroutine(destroyProjectile(projectileCloneSideWartsFour));
-            StartCoroutine(destroyProjectile(cprojectileCloneSideWartsFive));
+            StartCoroutine(destroyProjectile(projectileCloneSideWartsFive));
             sliderLeft = 0;
         }
 
@@ -296,6 +309,12 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    //  private IEnumerator destroyBubble(Rigidbody bubbleClone)
+    //  {
+    //      yield return new WaitForSeconds(5f);
+    //      Destroy(bubbleClone.gameObject);
+    //  }
+
     private void eyeLookForward()
     {
         if (Input.GetAxis("Horizontal") == 0)
@@ -304,13 +323,35 @@ public class PlayerController : MonoBehaviour
         }
         if (eyeTimer >= 1)
         {
-            leftEye.transform.GetChild(0).localPosition = Vector3.MoveTowards(leftEye.transform.GetChild(0).localPosition, new Vector3(0, 0, 0f), 0.05f);
+            leftEye.transform.GetChild(0).localPosition = Vector3.MoveTowards(leftEye.transform.GetChild(0).localPosition, new Vector3(0, 0, 0), 0.05f);
             rightEye.transform.GetChild(0).localPosition = Vector3.MoveTowards(rightEye.transform.GetChild(0).localPosition, new Vector3(0, 0, 0), 0.05f);
         }
         if (Input.GetAxis("Horizontal") != 0)
         {
             leftEye.transform.GetChild(0).localPosition = Vector3.MoveTowards(leftEye.transform.GetChild(0).localPosition, new Vector3(0, 0, 0.8f), 0.05f);
             rightEye.transform.GetChild(0).localPosition = Vector3.MoveTowards(rightEye.transform.GetChild(0).localPosition, new Vector3(0, 0, 0.8f), 0.05f);
+
+            eyeTimer = 0;
+        }
+    }
+
+    private void eyelidMover()
+    {
+        if (Input.GetAxis("Horizontal") == 0)
+        {
+            eyeTimer += Time.deltaTime;
+        }
+        if (eyeTimer >= 1)
+        {
+            // leftLid.transform.rotation = Quaternion.Euler(Vector3.MoveTowards(leftLid.transform.rotation.eulerAngles, new Vector3(0, 0, 0), 1)); //(92, 0, 0);
+            leftLid.transform.rotation = Quaternion.Euler(92, 0, 0);
+            rightLid.transform.rotation = Quaternion.Euler(92, 0, 0);
+        }
+        if (Input.GetAxis("Horizontal") != 0)
+        {
+            // leftLid.transform.rotation = Quaternion.Euler(Vector3.MoveTowards(leftLid.transform.rotation.eulerAngles, new Vector3(0, 0, 180), 1)); //(92, 0, 0);
+            leftLid.transform.rotation = Quaternion.Euler(85, 0, 0);
+            rightLid.transform.rotation = Quaternion.Euler(85, 0, 0);
             eyeTimer = 0;
         }
     }

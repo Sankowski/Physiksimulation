@@ -1,9 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class winScript : MonoBehaviour
 {
+    public AudioClip audioSound;
+
     public static int donutsCount;
     private float timer;
 
@@ -15,7 +18,9 @@ public class winScript : MonoBehaviour
         }
         if (timer >= 3)
         {
-            Debug.Log("Winner");
+            donutsCount = 0;
+            SceneManager.LoadScene("Winning Screen");
+            AudioChangerScript.changeMusic(audioSound);
         }
         if (donutsCount != 5)
         {

@@ -5,7 +5,10 @@ licenseType: Free
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - upperJaw: {instanceID: 0}
+  - lowerJaw: {instanceID: 0}
+  - audioSound: {fileID: 8300000, guid: 8a7c04c03cf1ff043a85cdc92cb503b4, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
