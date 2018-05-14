@@ -8,9 +8,9 @@ public class BubbleScript : MonoBehaviour
 
     private void Start()
     {
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 20; i++)
         {
-            Instantiate(bubblePrefab, new Vector3(Random.Range(-23.82f, 23.13f), Random.Range(11.48f, -12.54f), 0f), Random.rotation);
+            Instantiate(bubblePrefab, new Vector3(Random.Range(-23.82f, 23.13f), Random.Range(11.48f, -12.54f), 0f), Quaternion.Euler(Random.Range(0, 360), 90, 0));
         }
     }
 }

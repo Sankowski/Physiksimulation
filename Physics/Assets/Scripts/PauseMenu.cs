@@ -10,17 +10,27 @@ public class PauseMenu : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetButtonDown("Cancel"))
-        {
-            if (GameIsPaused)
-            {
-                Resume();
-            }
-            else
-            {
-                Pause();
-            }
-        }
+        //     if (Input.GetButtonDown("Cancel"))
+        //     {
+        //         if (GameIsPaused)
+        //         {
+        //             Resume();
+        //         }
+        //         else
+        //         {
+        //             Pause();
+        //         }
+        //     }
+    }
+
+    public void ButtonPauseMenu()
+    {
+        Pause();
+    }
+
+    public void ButtonResumeGame()
+    {
+        Resume();
     }
 
     public void Resume()

@@ -17,8 +17,8 @@ public class PlayerController : MonoBehaviour
 
     public Material material;
 
+    public Rigidbody bubblePrefab;
     public Rigidbody projectile;
-    // public Rigidbody bubble;
 
     public Slider leftSlider;
     public Slider rightSlider;
@@ -74,6 +74,7 @@ public class PlayerController : MonoBehaviour
         leftEye.transform.LookAt(spike.transform.position);
         rightEye.transform.LookAt(spike.transform.position);
 
+        mouseMovementSpike();
         spikeController();
         projectilePrefab();
 
@@ -94,6 +95,12 @@ public class PlayerController : MonoBehaviour
     private IEnumerator destroyProjectile(Rigidbody rb)
     {
         yield return new WaitForSeconds(0.5f);
+        Destroy(rb.gameObject);
+    }
+
+    private IEnumerator destroyBubble(Rigidbody rb)
+    {
+        yield return new WaitForSeconds(0.8f);
         Destroy(rb.gameObject);
     }
 
@@ -168,6 +175,21 @@ public class PlayerController : MonoBehaviour
         eyeLookForward();
     }
 
+    private void mouseMovementSpike()
+    {
+        if (Input.GetAxis("Mouse X") < 0)
+        {
+            spike.transform.Translate(-1 * 0.1f, 0, 0f);
+        }
+        if (Input.GetAxis("Mouse X") > 0)
+        {
+            spike.transform.Translate(1 * 0.1f, 0, 0f);
+        }
+        spike.transform.position = new Vector3(Mathf.Min(spike.transform.position.x, 5.5f), spike.transform.position.y, spike.transform.position.z);
+        spike.transform.position = new Vector3(Mathf.Max(spike.transform.position.x, -5.5f), spike.transform.position.y, spike.transform.position.z);
+        eyeLookForward();
+    }
+
     private void projectilePrefab()
     {
         if (Input.GetButton("Fire1"))
@@ -189,14 +211,10 @@ public class PlayerController : MonoBehaviour
             Rigidbody projectileCloneSideWartsThree;
             Rigidbody projectileCloneSideWartsFour;
             Rigidbody projectileCloneSideWartsFive;
-            // Rigidbody bubbleClone;
-
-            //  for (int i = 0; i < 8; i++)
-            //  {
-            //      bubbleClone = Instantiate(bubble, new Vector3(-3.068f + i, -7.37f, -6.8f), transform.rotation) as Rigidbody;
-            //      bubbleClone.AddForce(Vector3.up * sliderLeft, ForceMode.Impulse);
-            //      StartCoroutine(destroyBubble(bubbleClone));
-            //  }
+            Rigidbody bubbleClone;
+            Rigidbody bubbleCloneTwo;
+            Rigidbody bubbleCloneSidewards;
+            Rigidbody bubbleCloneSidewardsTwo;
 
             projectileClone = Instantiate(projectile, new Vector3(-3.068f, -7.37f, -6.281f), transform.rotation) as Rigidbody;
             projectileCloneOne = Instantiate(projectile, new Vector3(-4.57f, -7.37f, -6.281f), transform.rotation) as Rigidbody;
@@ -206,12 +224,6 @@ public class PlayerController : MonoBehaviour
             projectileCloneFive = Instantiate(projectile, new Vector3(-2.07f, -7.37f, -6.281f), transform.rotation) as Rigidbody;
             projectileCloneSix = Instantiate(projectile, new Vector3(-1.57f, -7.37f, -6.281f), transform.rotation) as Rigidbody;
 
-            projectileCloneSideWartsOne = Instantiate(projectile, new Vector3(-7.256f, -4.856f, -6.281f), transform.rotation) as Rigidbody;
-            projectileCloneSideWartsTwo = Instantiate(projectile, new Vector3(-6.7f, -5.356f, -6.281f), transform.rotation) as Rigidbody;
-            projectileCloneSideWartsThree = Instantiate(projectile, new Vector3(-6.256f, -5.856f, -6.281f), transform.rotation) as Rigidbody;
-            projectileCloneSideWartsFour = Instantiate(projectile, new Vector3(-5.756f, -6.356f, -6.281f), transform.rotation) as Rigidbody;
-            projectileCloneSideWartsFive = Instantiate(projectile, new Vector3(-5.256f, -6.856f, -6.281f), transform.rotation) as Rigidbody;
-
             projectileClone.AddForce(Vector3.up * sliderLeft, ForceMode.Impulse);
             projectileCloneOne.AddForce(Vector3.up * sliderLeft, ForceMode.Impulse);
             projectileCloneTwo.AddForce(Vector3.up * sliderLeft, ForceMode.Impulse);
@@ -219,14 +231,6 @@ public class PlayerController : MonoBehaviour
             projectileCloneFour.AddForce(Vector3.up * sliderLeft, ForceMode.Impulse);
             projectileCloneFive.AddForce(Vector3.up * sliderLeft, ForceMode.Impulse);
             projectileCloneSix.AddForce(Vector3.up * sliderLeft, ForceMode.Impulse);
-
-            projectileCloneSideWartsOne.AddForce(new Vector3(ForceSidewardsLeftX, ForceSidewardsY, 0) * sliderLeft, ForceMode.Impulse);
-            projectileCloneSideWartsTwo.AddForce(new Vector3(ForceSidewardsLeftX, ForceSidewardsY, 0) * sliderLeft, ForceMode.Impulse);
-            projectileCloneSideWartsThree.AddForce(new Vector3(ForceSidewardsLeftX, ForceSidewardsY, 0) * sliderLeft, ForceMode.Impulse);
-            projectileCloneSideWartsFour.AddForce(new Vector3(ForceSidewardsLeftX, ForceSidewardsY, 0) * sliderLeft, ForceMode.Impulse);
-            projectileCloneSideWartsFive.AddForce(new Vector3(ForceSidewardsLeftX, ForceSidewardsY, 0) * sliderLeft, ForceMode.Impulse);
-
-            //StartCoroutine(destroyProjectile(projectileClone));
 
             StartCoroutine(destroyProjectile(projectileClone));
             StartCoroutine(destroyProjectile(projectileCloneOne));
@@ -236,11 +240,34 @@ public class PlayerController : MonoBehaviour
             StartCoroutine(destroyProjectile(projectileCloneFive));
             StartCoroutine(destroyProjectile(projectileCloneSix));
 
+            projectileCloneSideWartsOne = Instantiate(projectile, new Vector3(-7.256f, -4.856f, -6.281f), transform.rotation) as Rigidbody;
+            projectileCloneSideWartsTwo = Instantiate(projectile, new Vector3(-6.7f, -5.356f, -6.281f), transform.rotation) as Rigidbody;
+            projectileCloneSideWartsThree = Instantiate(projectile, new Vector3(-6.256f, -5.856f, -6.281f), transform.rotation) as Rigidbody;
+            projectileCloneSideWartsFour = Instantiate(projectile, new Vector3(-5.756f, -6.356f, -6.281f), transform.rotation) as Rigidbody;
+            projectileCloneSideWartsFive = Instantiate(projectile, new Vector3(-5.256f, -6.856f, -6.281f), transform.rotation) as Rigidbody;
+
             StartCoroutine(destroyProjectile(projectileCloneSideWartsOne));
             StartCoroutine(destroyProjectile(projectileCloneSideWartsTwo));
             StartCoroutine(destroyProjectile(projectileCloneSideWartsThree));
             StartCoroutine(destroyProjectile(projectileCloneSideWartsFour));
             StartCoroutine(destroyProjectile(projectileCloneSideWartsFive));
+
+            projectileCloneSideWartsOne.AddForce(new Vector3(ForceSidewardsLeftX, ForceSidewardsY, 0) * sliderLeft, ForceMode.Impulse);
+            projectileCloneSideWartsTwo.AddForce(new Vector3(ForceSidewardsLeftX, ForceSidewardsY, 0) * sliderLeft, ForceMode.Impulse);
+            projectileCloneSideWartsThree.AddForce(new Vector3(ForceSidewardsLeftX, ForceSidewardsY, 0) * sliderLeft, ForceMode.Impulse);
+            projectileCloneSideWartsFour.AddForce(new Vector3(ForceSidewardsLeftX, ForceSidewardsY, 0) * sliderLeft, ForceMode.Impulse);
+            projectileCloneSideWartsFive.AddForce(new Vector3(ForceSidewardsLeftX, ForceSidewardsY, 0) * sliderLeft, ForceMode.Impulse);
+
+            bubbleClone = Instantiate(bubblePrefab, new Vector3(-3.04f, -7.37f, -6.281f), transform.rotation) as Rigidbody;
+            bubbleCloneTwo = Instantiate(bubblePrefab, new Vector3(-3.04f, -7.37f, -6.281f), transform.rotation) as Rigidbody;
+            bubbleCloneSidewards = Instantiate(bubblePrefab, new Vector3(-5.98f, -6f, -6.281f), transform.rotation) as Rigidbody;
+            bubbleCloneSidewardsTwo = Instantiate(bubblePrefab, new Vector3(-5.98f, -6f, -6.281f), transform.rotation) as Rigidbody;
+
+            StartCoroutine(destroyBubble(bubbleClone));
+            StartCoroutine(destroyBubble(bubbleCloneTwo));
+            StartCoroutine(destroyBubble(bubbleCloneSidewards));
+            StartCoroutine(destroyBubble(bubbleCloneSidewardsTwo));
+
             sliderLeft = 0;
         }
 
@@ -263,6 +290,10 @@ public class PlayerController : MonoBehaviour
             Rigidbody projectileCloneSideWartsThree;
             Rigidbody projectileCloneSideWartsFour;
             Rigidbody projectileCloneSideWartsFive;
+            Rigidbody bubbleClone;
+            Rigidbody bubbleCloneTwo;
+            Rigidbody bubbleCloneSidewards;
+            Rigidbody bubbleCloneSidewardsTwo;
 
             projectileClone = Instantiate(projectile, new Vector3(1.58f, -7.37f, -6.281f), transform.rotation) as Rigidbody;
             projectileCloneOne = Instantiate(projectile, new Vector3(2.08f, -7.37f, -6.281f), transform.rotation) as Rigidbody;
@@ -305,19 +336,24 @@ public class PlayerController : MonoBehaviour
             StartCoroutine(destroyProjectile(projectileCloneSideWartsThree));
             StartCoroutine(destroyProjectile(projectileCloneSideWartsFour));
             StartCoroutine(destroyProjectile(projectileCloneSideWartsFive));
+
+            bubbleClone = Instantiate(bubblePrefab, new Vector3(3.04f, -7.37f, -6.281f), transform.rotation) as Rigidbody;
+            bubbleCloneTwo = Instantiate(bubblePrefab, new Vector3(3.04f, -7.37f, -6.281f), transform.rotation) as Rigidbody;
+            bubbleCloneSidewards = Instantiate(bubblePrefab, new Vector3(5.98f, -6f, -6.281f), transform.rotation) as Rigidbody;
+            bubbleCloneSidewardsTwo = Instantiate(bubblePrefab, new Vector3(5.98f, -6f, -6.281f), transform.rotation) as Rigidbody;
+
+            StartCoroutine(destroyBubble(bubbleClone));
+            StartCoroutine(destroyBubble(bubbleCloneTwo));
+            StartCoroutine(destroyBubble(bubbleCloneSidewards));
+            StartCoroutine(destroyBubble(bubbleCloneSidewardsTwo));
+
             sliderRight = 0;
         }
     }
 
-    //  private IEnumerator destroyBubble(Rigidbody bubbleClone)
-    //  {
-    //      yield return new WaitForSeconds(5f);
-    //      Destroy(bubbleClone.gameObject);
-    //  }
-
     private void eyeLookForward()
     {
-        if (Input.GetAxis("Horizontal") == 0)
+        if (Input.GetAxis("Horizontal") == 0 || Input.GetAxis("Mouse X") == 0)
         {
             eyeTimer += Time.deltaTime;
         }
@@ -326,7 +362,7 @@ public class PlayerController : MonoBehaviour
             leftEye.transform.GetChild(0).localPosition = Vector3.MoveTowards(leftEye.transform.GetChild(0).localPosition, new Vector3(0, 0, 0), 0.05f);
             rightEye.transform.GetChild(0).localPosition = Vector3.MoveTowards(rightEye.transform.GetChild(0).localPosition, new Vector3(0, 0, 0), 0.05f);
         }
-        if (Input.GetAxis("Horizontal") != 0)
+        if (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Mouse X") != 0)
         {
             leftEye.transform.GetChild(0).localPosition = Vector3.MoveTowards(leftEye.transform.GetChild(0).localPosition, new Vector3(0, 0, 0.8f), 0.05f);
             rightEye.transform.GetChild(0).localPosition = Vector3.MoveTowards(rightEye.transform.GetChild(0).localPosition, new Vector3(0, 0, 0.8f), 0.05f);
@@ -337,19 +373,17 @@ public class PlayerController : MonoBehaviour
 
     private void eyelidMover()
     {
-        if (Input.GetAxis("Horizontal") == 0)
+        if (Input.GetAxis("Horizontal") == 0 || Input.GetAxis("Mouse X") == 0)
         {
             eyeTimer += Time.deltaTime;
         }
         if (eyeTimer >= 1)
         {
-            // leftLid.transform.rotation = Quaternion.Euler(Vector3.MoveTowards(leftLid.transform.rotation.eulerAngles, new Vector3(0, 0, 0), 1)); //(92, 0, 0);
             leftLid.transform.rotation = Quaternion.Euler(92, 0, 0);
             rightLid.transform.rotation = Quaternion.Euler(92, 0, 0);
         }
-        if (Input.GetAxis("Horizontal") != 0)
+        if (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Mouse X") != 0)
         {
-            // leftLid.transform.rotation = Quaternion.Euler(Vector3.MoveTowards(leftLid.transform.rotation.eulerAngles, new Vector3(0, 0, 180), 1)); //(92, 0, 0);
             leftLid.transform.rotation = Quaternion.Euler(85, 0, 0);
             rightLid.transform.rotation = Quaternion.Euler(85, 0, 0);
             eyeTimer = 0;
