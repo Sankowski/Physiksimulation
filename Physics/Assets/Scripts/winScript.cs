@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class winScript : MonoBehaviour
 {
@@ -10,13 +11,17 @@ public class winScript : MonoBehaviour
     public static int donutsCount;
     private float timer;
 
+    private void Start()
+    {
+    }
+
     private void Update()
     {
         if (donutsCount == 5)
         {
             timer += Time.deltaTime;
         }
-        if (timer >= 3)
+        if (timer >= 1.5f)
         {
             donutsCount = 0;
             SceneManager.LoadScene("Winning Screen");

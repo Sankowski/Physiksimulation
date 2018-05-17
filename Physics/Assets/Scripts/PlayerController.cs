@@ -17,6 +17,9 @@ public class PlayerController : MonoBehaviour
 
     public Material material;
 
+    public Text newTimeText;
+    public Text oldTimeText;
+
     public Rigidbody bubblePrefab;
     public Rigidbody projectile;
 
@@ -31,10 +34,12 @@ public class PlayerController : MonoBehaviour
     private float sliderLeft = 0;
     private float sliderRight = 0;
     private float eyeTimer = 2;
+    private float timeCounter;
 
     private bool sliderLeftBool = true;
     private bool sliderRightBool = true;
     private bool shaker = true;
+    private bool gameStart = false;
 
     private void Start()
     {
@@ -66,16 +71,23 @@ public class PlayerController : MonoBehaviour
             temp.GetComponent<MeshRenderer>().material = material;
             temp.GetComponent<MeshRenderer>().material.SetColor("_EmissionColor", Random.ColorHSV(0f, 1f, 1f, 1f, 0.8f, 1f, 1f, 1f));
         }
+        float timeOld = 0;
+        if (PlayerPrefs.HasKey("timeOld"))
+        {
+            timeOld = PlayerPrefs.GetFloat("timeOld");
+            oldTimeText.text = string.Format("Old: {0,6:0.0} sec.", timeOld);
+        }
     }
 
     private void Update()
     {
+        PlayerPrefs.SetFloat("timeOld", Time.time - timeCounter);
+        PlayerPrefs.Save();
         eyelidMover();
         leftEye.transform.LookAt(spike.transform.position);
         rightEye.transform.LookAt(spike.transform.position);
 
         mouseMovementSpike();
-        spikeController();
         projectilePrefab();
 
         if (Input.GetKeyDown(KeyCode.Q) && shaker)
@@ -86,6 +98,16 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.E) && shaker)
         {
             StartCoroutine(levelShaker(level, 0.01f));
+        }
+
+        if (!gameStart)
+        {
+            gameStart = true;
+            timeCounter = Time.time;
+        }
+        if (gameStart)
+        {
+            newTimeText.text = string.Format("Time: {0,6:0.0} sec.", Time.time - timeCounter);
         }
 
         leftSlider.value = sliderLeft;
@@ -162,17 +184,6 @@ public class PlayerController : MonoBehaviour
         {
             sliderRightBool = true;
         }
-    }
-
-    private void spikeController()
-    {
-        horizontalMovement = Input.GetAxis("Horizontal");
-        spike.transform.Translate(horizontalMovement * 0.15f, 0, 0);
-
-        spike.transform.position = new Vector3(Mathf.Min(spike.transform.position.x, 5.5f), spike.transform.position.y, spike.transform.position.z);
-        spike.transform.position = new Vector3(Mathf.Max(spike.transform.position.x, -5.5f), spike.transform.position.y, spike.transform.position.z);
-
-        eyeLookForward();
     }
 
     private void mouseMovementSpike()
