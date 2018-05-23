@@ -5,21 +5,25 @@ using UnityEngine;
 public class PauseMenu : MonoBehaviour
 {
     public static bool GameIsPaused = false;
-
     public GameObject pauseMenuUi;
+
+    private void Start()
+    {
+    }
 
     private void Update()
     {
-    }
-
-    public void ButtonPauseMenu()
-    {
-        Pause();
-    }
-
-    public void ButtonResumeGame()
-    {
-        Resume();
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (GameIsPaused)
+            {
+                Resume();
+            }
+            else
+            {
+                Pause();
+            }
+        }
     }
 
     public void Resume()

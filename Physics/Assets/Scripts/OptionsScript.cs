@@ -10,17 +10,6 @@ public class OptionsScript : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetButtonDown("Cancel"))
-        {
-            if (OptionsIsActivatet)
-            {
-                Resume();
-            }
-            else
-            {
-                Pause();
-            }
-        }
     }
 
     public void Resume()
@@ -30,7 +19,7 @@ public class OptionsScript : MonoBehaviour
         OptionsIsActivatet = false;
     }
 
-    private void Pause()
+    public void Pause()
     {
         OptionsMenu.SetActive(true);
         Time.timeScale = 0f;

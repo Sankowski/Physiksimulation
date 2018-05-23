@@ -6,8 +6,10 @@ using UnityEngine.UI;
 public class PlayerController : MonoBehaviour
 {
     public GameObject donutPrefab;
+
     public GameObject spike;
     public GameObject level;
+
     public GameObject sliderUiRight;
     public GameObject sliderUiLeft;
     public GameObject rightEye;
@@ -30,11 +32,12 @@ public class PlayerController : MonoBehaviour
     public float ForceSidewardsLeftX = 0.5f;
     public float ForceSidewardsY = 0.5f;
 
-    private float horizontalMovement;
     private float sliderLeft = 0;
     private float sliderRight = 0;
     private float eyeTimer = 2;
     private float timeCounter;
+    private float currentTime;
+    private float bestTime;
 
     private bool sliderLeftBool = true;
     private bool sliderRightBool = true;
@@ -72,6 +75,7 @@ public class PlayerController : MonoBehaviour
             temp.GetComponent<MeshRenderer>().material.SetColor("_EmissionColor", Random.ColorHSV(0f, 1f, 1f, 1f, 0.8f, 1f, 1f, 1f));
         }
         float timeOld = 0;
+
         if (PlayerPrefs.HasKey("timeOld"))
         {
             timeOld = PlayerPrefs.GetFloat("timeOld");
@@ -83,6 +87,17 @@ public class PlayerController : MonoBehaviour
     {
         PlayerPrefs.SetFloat("timeOld", Time.time - timeCounter);
         PlayerPrefs.Save();
+
+        if (!gameStart)
+        {
+            gameStart = true;
+            timeCounter = Time.time;
+        }
+        if (gameStart)
+        {
+            newTimeText.text = string.Format("Time: {0,6:0.0} sec.", Time.time - timeCounter);
+        }
+
         eyelidMover();
         leftEye.transform.LookAt(spike.transform.position);
         rightEye.transform.LookAt(spike.transform.position);
@@ -98,16 +113,6 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.E) && shaker)
         {
             StartCoroutine(levelShaker(level, 0.01f));
-        }
-
-        if (!gameStart)
-        {
-            gameStart = true;
-            timeCounter = Time.time;
-        }
-        if (gameStart)
-        {
-            newTimeText.text = string.Format("Time: {0,6:0.0} sec.", Time.time - timeCounter);
         }
 
         leftSlider.value = sliderLeft;
@@ -186,15 +191,15 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void mouseMovementSpike()
+    public void mouseMovementSpike()
     {
         if (Input.GetAxis("Mouse X") < 0)
         {
-            spike.transform.Translate(-1 * 0.1f, 0, 0f);
+            spike.transform.Translate(-1 * 5f * Time.deltaTime, 0, 0f);
         }
         if (Input.GetAxis("Mouse X") > 0)
         {
-            spike.transform.Translate(1 * 0.1f, 0, 0f);
+            spike.transform.Translate(1 * 5f * Time.deltaTime, 0, 0f);
         }
         spike.transform.position = new Vector3(Mathf.Min(spike.transform.position.x, 5.5f), spike.transform.position.y, spike.transform.position.z);
         spike.transform.position = new Vector3(Mathf.Max(spike.transform.position.x, -5.5f), spike.transform.position.y, spike.transform.position.z);
@@ -305,6 +310,11 @@ public class PlayerController : MonoBehaviour
             Rigidbody bubbleCloneTwo;
             Rigidbody bubbleCloneSidewards;
             Rigidbody bubbleCloneSidewardsTwo;
+
+            //   for (int i = 0; i < 12; i++)
+            //   {
+            //       Instantiate(projectile.M)
+            //   }
 
             projectileClone = Instantiate(projectile, new Vector3(1.58f, -7.37f, -6.281f), transform.rotation) as Rigidbody;
             projectileCloneOne = Instantiate(projectile, new Vector3(2.08f, -7.37f, -6.281f), transform.rotation) as Rigidbody;

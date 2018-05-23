@@ -8,6 +8,8 @@ public class winScript : MonoBehaviour
 {
     public AudioClip audioSound;
 
+    public GameObject donutPrefab;
+
     public static int donutsCount;
     private float timer;
 
@@ -37,6 +39,7 @@ public class winScript : MonoBehaviour
     {
         if (other.CompareTag("Spike"))
         {
+            donutPrefab.GetComponent<Rigidbody>().mass = 15;
             donutsCount++;
         }
     }
@@ -45,6 +48,7 @@ public class winScript : MonoBehaviour
     {
         if (other.CompareTag("Spike"))
         {
+            donutPrefab.GetComponent<Rigidbody>().mass = 1;
             donutsCount--;
         }
     }
