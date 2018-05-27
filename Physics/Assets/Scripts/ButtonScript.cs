@@ -7,21 +7,21 @@ using UnityEngine.SceneManagement;
 public class ButtonScript : MonoBehaviour
 {
     public Animator animator;
-    public Canvas CanvasOff;
-    public Animator GameStartAnimator;
+    public Canvas canvasOff;
+    public Animator gameStartAnimator;
     public AudioClip audioSound;
 
     public void Animation()
     {
         animator.SetTrigger("StartButton");
-        CanvasOff.enabled = false;
+        canvasOff.enabled = false;
     }
 
     public void StartGame()
     {
         animator.SetTrigger("ButtonNewGame");
         AudioChangerScript.changeMusic(audioSound);
-        CanvasOff.enabled = false;
+        canvasOff.enabled = false;
     }
 
     public void CloseGame()

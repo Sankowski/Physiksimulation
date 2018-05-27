@@ -1933,8 +1933,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 0}
-  CanvasOff: {fileID: 0}
-  GameStartAnimator: {fileID: 0}
+  canvasOff: {fileID: 0}
+  gameStartAnimator: {fileID: 0}
   audioSound: {fileID: 0}
 --- !u!1 &442124281
 GameObject:
@@ -6544,8 +6544,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 300773263}
-  CanvasOff: {fileID: 1990298515}
-  GameStartAnimator: {fileID: 0}
+  canvasOff: {fileID: 1990298515}
+  gameStartAnimator: {fileID: 0}
   audioSound: {fileID: 8300000, guid: a80b10880ac96c14fa115e2f7b331a1e, type: 3}
 --- !u!43 &1758878886
 Mesh:
@@ -6812,8 +6812,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 0}
-  CanvasOff: {fileID: 0}
-  GameStartAnimator: {fileID: 0}
+  canvasOff: {fileID: 0}
+  gameStartAnimator: {fileID: 0}
   audioSound: {fileID: 0}
 --- !u!1 &1812353933
 GameObject:

@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class OptionsScript : MonoBehaviour
 {
-    public static bool OptionsIsActivatet = false;
+    public static bool optionsIsActivatet = false;
 
-    public GameObject OptionsMenu;
+    public GameObject optionsMenu;
 
     private void Update()
     {
@@ -14,15 +14,15 @@ public class OptionsScript : MonoBehaviour
 
     public void Resume()
     {
-        OptionsMenu.SetActive(false);
+        optionsMenu.SetActive(false);
         Time.timeScale = 1f;
-        OptionsIsActivatet = false;
+        optionsIsActivatet = false;
     }
 
     public void Pause()
     {
-        OptionsMenu.SetActive(true);
+        optionsMenu.SetActive(true);
         Time.timeScale = 0f;
-        OptionsIsActivatet = true;
+        optionsIsActivatet = true;
     }
 }

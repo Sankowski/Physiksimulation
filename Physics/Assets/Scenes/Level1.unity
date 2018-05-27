@@ -2380,9 +2380,10 @@ MonoBehaviour:
     type: 2}
   leftSlider: {fileID: 852393330}
   rightSlider: {fileID: 2036725499}
-  ForceSidewardsRightX: -0.6
-  ForceSidewardsLeftX: 0.6
-  ForceSidewardsY: 1.7
+  forceSidewardsRightX: -0.5
+  forceSidewardsLeftX: 0.5
+  forceSidewardsY: 0.5
+  mouseSpeed: 7
 --- !u!4 &1429354400
 Transform:
   m_ObjectHideFlags: 0

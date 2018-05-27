@@ -28,9 +28,9 @@ public class PlayerController : MonoBehaviour
     public Slider leftSlider;
     public Slider rightSlider;
 
-    public float ForceSidewardsRightX = -0.5f;
-    public float ForceSidewardsLeftX = 0.5f;
-    public float ForceSidewardsY = 0.5f;
+    public float forceSidewardsRightX = -0.5f;
+    public float forceSidewardsLeftX = 0.5f;
+    public float forceSidewardsY = 0.5f;
 
     private float sliderLeft = 0;
     private float sliderRight = 0;
@@ -41,7 +41,6 @@ public class PlayerController : MonoBehaviour
 
     private bool sliderLeftBool = true;
     private bool sliderRightBool = true;
-    private bool shaker = true;
     private bool gameStart = false;
 
     private void Start()
@@ -105,16 +104,6 @@ public class PlayerController : MonoBehaviour
         mouseMovementSpike();
         projectilePrefab();
 
-        if (Input.GetKeyDown(KeyCode.Q) && shaker)
-        {
-            StartCoroutine(levelShaker(level, -0.01f));
-        }
-
-        if (Input.GetKeyDown(KeyCode.E) && shaker)
-        {
-            StartCoroutine(levelShaker(level, 0.01f));
-        }
-
         leftSlider.value = sliderLeft;
         rightSlider.value = sliderRight;
     }
@@ -129,26 +118,6 @@ public class PlayerController : MonoBehaviour
     {
         yield return new WaitForSeconds(0.8f);
         Destroy(rb.gameObject);
-    }
-
-    private IEnumerator levelShaker(GameObject level, float moveDistance)
-    {
-        shaker = false;
-        for (int i = 0; i < 25; i++)
-        {
-            yield return null;
-            sliderUiRight.GetComponent<RectTransform>().Translate(0, -moveDistance * 37.05f, 0);
-            sliderUiLeft.GetComponent<RectTransform>().Translate(0, -moveDistance * 37.05f, 0);
-            level.transform.Translate(moveDistance, 0, 0);
-        }
-        for (int i = 0; i < 25; i++)
-        {
-            yield return null;
-            sliderUiRight.GetComponent<RectTransform>().Translate(0, moveDistance * 37.05f, 0);
-            sliderUiLeft.GetComponent<RectTransform>().Translate(0, moveDistance * 37.05f, 0);
-            level.transform.Translate(-moveDistance, 0, 0);
-        }
-        shaker = true;
     }
 
     private void sliderFunctionLeft()
@@ -191,15 +160,17 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public float mouseSpeed;
+
     public void mouseMovementSpike()
     {
         if (Input.GetAxis("Mouse X") < 0)
         {
-            spike.transform.Translate(-1 * 5f * Time.deltaTime, 0, 0f);
+            spike.transform.Translate(-1 * mouseSpeed * Time.deltaTime, 0, 0f);
         }
         if (Input.GetAxis("Mouse X") > 0)
         {
-            spike.transform.Translate(1 * 5f * Time.deltaTime, 0, 0f);
+            spike.transform.Translate(1 * mouseSpeed * Time.deltaTime, 0, 0f);
         }
         spike.transform.position = new Vector3(Mathf.Min(spike.transform.position.x, 5.5f), spike.transform.position.y, spike.transform.position.z);
         spike.transform.position = new Vector3(Mathf.Max(spike.transform.position.x, -5.5f), spike.transform.position.y, spike.transform.position.z);
@@ -216,73 +187,30 @@ public class PlayerController : MonoBehaviour
         if (Input.GetButtonUp("Fire1"))
         {
             Rigidbody projectileClone;
-            Rigidbody projectileCloneOne;
-            Rigidbody projectileCloneTwo;
-            Rigidbody projectileCloneThree;
-            Rigidbody projectileCloneFour;
-            Rigidbody projectileCloneFive;
-            Rigidbody projectileCloneSix;
             Rigidbody projectileCloneSideWartsOne;
-            Rigidbody projectileCloneSideWartsTwo;
-            Rigidbody projectileCloneSideWartsThree;
-            Rigidbody projectileCloneSideWartsFour;
-            Rigidbody projectileCloneSideWartsFive;
             Rigidbody bubbleClone;
-            Rigidbody bubbleCloneTwo;
             Rigidbody bubbleCloneSidewards;
-            Rigidbody bubbleCloneSidewardsTwo;
 
-            projectileClone = Instantiate(projectile, new Vector3(-3.068f, -7.37f, -6.281f), transform.rotation) as Rigidbody;
-            projectileCloneOne = Instantiate(projectile, new Vector3(-4.57f, -7.37f, -6.281f), transform.rotation) as Rigidbody;
-            projectileCloneTwo = Instantiate(projectile, new Vector3(-4.07f, -7.37f, -6.281f), transform.rotation) as Rigidbody;
-            projectileCloneThree = Instantiate(projectile, new Vector3(-3.57f, -7.37f, -6.281f), transform.rotation) as Rigidbody;
-            projectileCloneFour = Instantiate(projectile, new Vector3(-2.57f, -7.37f, -6.281f), transform.rotation) as Rigidbody;
-            projectileCloneFive = Instantiate(projectile, new Vector3(-2.07f, -7.37f, -6.281f), transform.rotation) as Rigidbody;
-            projectileCloneSix = Instantiate(projectile, new Vector3(-1.57f, -7.37f, -6.281f), transform.rotation) as Rigidbody;
+            for (int x = 0; x <= 7; x++)
+            {
+                projectileClone = Instantiate(projectile, new Vector3(x * 0.41f - 4.57f, -7.37f, -6.281f), transform.rotation) as Rigidbody;
+                projectileClone.AddForce(Vector3.up * sliderLeft, ForceMode.Impulse);
+                StartCoroutine(destroyProjectile(projectileClone));
+                for (int y = 0; y < 1; y++)
+                {
+                    bubbleClone = Instantiate(bubblePrefab, new Vector3(y * 1 - 3.04f, -7.37f, -6.281f), transform.rotation) as Rigidbody;
+                    StartCoroutine(destroyBubble(bubbleClone));
+                    bubbleCloneSidewards = Instantiate(bubblePrefab, new Vector3(y * 1 - 5.98f, -6f, -6.281f), transform.rotation) as Rigidbody;
+                    StartCoroutine(destroyBubble(bubbleCloneSidewards));
+                }
+            }
 
-            projectileClone.AddForce(Vector3.up * sliderLeft, ForceMode.Impulse);
-            projectileCloneOne.AddForce(Vector3.up * sliderLeft, ForceMode.Impulse);
-            projectileCloneTwo.AddForce(Vector3.up * sliderLeft, ForceMode.Impulse);
-            projectileCloneThree.AddForce(Vector3.up * sliderLeft, ForceMode.Impulse);
-            projectileCloneFour.AddForce(Vector3.up * sliderLeft, ForceMode.Impulse);
-            projectileCloneFive.AddForce(Vector3.up * sliderLeft, ForceMode.Impulse);
-            projectileCloneSix.AddForce(Vector3.up * sliderLeft, ForceMode.Impulse);
-
-            StartCoroutine(destroyProjectile(projectileClone));
-            StartCoroutine(destroyProjectile(projectileCloneOne));
-            StartCoroutine(destroyProjectile(projectileCloneTwo));
-            StartCoroutine(destroyProjectile(projectileCloneThree));
-            StartCoroutine(destroyProjectile(projectileCloneFour));
-            StartCoroutine(destroyProjectile(projectileCloneFive));
-            StartCoroutine(destroyProjectile(projectileCloneSix));
-
-            projectileCloneSideWartsOne = Instantiate(projectile, new Vector3(-7.256f, -4.856f, -6.281f), transform.rotation) as Rigidbody;
-            projectileCloneSideWartsTwo = Instantiate(projectile, new Vector3(-6.7f, -5.356f, -6.281f), transform.rotation) as Rigidbody;
-            projectileCloneSideWartsThree = Instantiate(projectile, new Vector3(-6.256f, -5.856f, -6.281f), transform.rotation) as Rigidbody;
-            projectileCloneSideWartsFour = Instantiate(projectile, new Vector3(-5.756f, -6.356f, -6.281f), transform.rotation) as Rigidbody;
-            projectileCloneSideWartsFive = Instantiate(projectile, new Vector3(-5.256f, -6.856f, -6.281f), transform.rotation) as Rigidbody;
-
-            StartCoroutine(destroyProjectile(projectileCloneSideWartsOne));
-            StartCoroutine(destroyProjectile(projectileCloneSideWartsTwo));
-            StartCoroutine(destroyProjectile(projectileCloneSideWartsThree));
-            StartCoroutine(destroyProjectile(projectileCloneSideWartsFour));
-            StartCoroutine(destroyProjectile(projectileCloneSideWartsFive));
-
-            projectileCloneSideWartsOne.AddForce(new Vector3(ForceSidewardsLeftX, ForceSidewardsY, 0) * sliderLeft, ForceMode.Impulse);
-            projectileCloneSideWartsTwo.AddForce(new Vector3(ForceSidewardsLeftX, ForceSidewardsY, 0) * sliderLeft, ForceMode.Impulse);
-            projectileCloneSideWartsThree.AddForce(new Vector3(ForceSidewardsLeftX, ForceSidewardsY, 0) * sliderLeft, ForceMode.Impulse);
-            projectileCloneSideWartsFour.AddForce(new Vector3(ForceSidewardsLeftX, ForceSidewardsY, 0) * sliderLeft, ForceMode.Impulse);
-            projectileCloneSideWartsFive.AddForce(new Vector3(ForceSidewardsLeftX, ForceSidewardsY, 0) * sliderLeft, ForceMode.Impulse);
-
-            bubbleClone = Instantiate(bubblePrefab, new Vector3(-3.04f, -7.37f, -6.281f), transform.rotation) as Rigidbody;
-            bubbleCloneTwo = Instantiate(bubblePrefab, new Vector3(-3.04f, -7.37f, -6.281f), transform.rotation) as Rigidbody;
-            bubbleCloneSidewards = Instantiate(bubblePrefab, new Vector3(-5.98f, -6f, -6.281f), transform.rotation) as Rigidbody;
-            bubbleCloneSidewardsTwo = Instantiate(bubblePrefab, new Vector3(-5.98f, -6f, -6.281f), transform.rotation) as Rigidbody;
-
-            StartCoroutine(destroyBubble(bubbleClone));
-            StartCoroutine(destroyBubble(bubbleCloneTwo));
-            StartCoroutine(destroyBubble(bubbleCloneSidewards));
-            StartCoroutine(destroyBubble(bubbleCloneSidewardsTwo));
+            for (int y = 0; y <= 4; y++)
+            {
+                projectileCloneSideWartsOne = Instantiate(projectile, new Vector3(y * 0.41f - 7.256f, y * -0.41f - 4.856f, -6.281f), transform.rotation) as Rigidbody;
+                projectileCloneSideWartsOne.AddForce(new Vector3(forceSidewardsLeftX, forceSidewardsY, 0) * sliderLeft, ForceMode.Impulse);
+                StartCoroutine(destroyProjectile(projectileCloneSideWartsOne));
+            }
 
             sliderLeft = 0;
         }
@@ -295,78 +223,29 @@ public class PlayerController : MonoBehaviour
         if (Input.GetButtonUp("Fire2"))
         {
             Rigidbody projectileClone;
-            Rigidbody projectileCloneOne;
-            Rigidbody projectileCloneTwo;
-            Rigidbody projectileCloneThree;
-            Rigidbody projectileCloneFour;
-            Rigidbody projectileCloneFive;
-            Rigidbody projectileCloneSix;
-            Rigidbody projectileCloneSideWartsOne;
-            Rigidbody projectileCloneSideWartsTwo;
-            Rigidbody projectileCloneSideWartsThree;
-            Rigidbody projectileCloneSideWartsFour;
-            Rigidbody projectileCloneSideWartsFive;
+            Rigidbody projectileCloneSideWards;
             Rigidbody bubbleClone;
-            Rigidbody bubbleCloneTwo;
             Rigidbody bubbleCloneSidewards;
-            Rigidbody bubbleCloneSidewardsTwo;
 
-            //   for (int i = 0; i < 12; i++)
-            //   {
-            //       Instantiate(projectile.M)
-            //   }
-
-            projectileClone = Instantiate(projectile, new Vector3(1.58f, -7.37f, -6.281f), transform.rotation) as Rigidbody;
-            projectileCloneOne = Instantiate(projectile, new Vector3(2.08f, -7.37f, -6.281f), transform.rotation) as Rigidbody;
-            projectileCloneTwo = Instantiate(projectile, new Vector3(2.58f, -7.37f, -6.281f), transform.rotation) as Rigidbody;
-            projectileCloneThree = Instantiate(projectile, new Vector3(3.08f, -7.37f, -6.281f), transform.rotation) as Rigidbody;
-            projectileCloneFour = Instantiate(projectile, new Vector3(3.58f, -7.37f, -6.281f), transform.rotation) as Rigidbody;
-            projectileCloneFive = Instantiate(projectile, new Vector3(4.08f, -7.37f, -6.281f), transform.rotation) as Rigidbody;
-            projectileCloneSix = Instantiate(projectile, new Vector3(4.58f, -7.37f, -6.281f), transform.rotation) as Rigidbody;
-
-            projectileCloneSideWartsOne = Instantiate(projectile, new Vector3(7.233f, -4.856f, -6.281f), transform.rotation) as Rigidbody;
-            projectileCloneSideWartsTwo = Instantiate(projectile, new Vector3(6.73f, -5.36f, -6.281f), transform.rotation) as Rigidbody;
-            projectileCloneSideWartsThree = Instantiate(projectile, new Vector3(6.23f, -5.86f, -6.281f), transform.rotation) as Rigidbody;
-            projectileCloneSideWartsFour = Instantiate(projectile, new Vector3(5.73f, -6.36f, -6.281f), transform.rotation) as Rigidbody;
-            projectileCloneSideWartsFive = Instantiate(projectile, new Vector3(5.73f, -6.36f, -6.281f), transform.rotation) as Rigidbody;
-
-            projectileClone.AddForce(Vector3.up * sliderRight, ForceMode.Impulse);
-            projectileCloneOne.AddForce(Vector3.up * sliderRight, ForceMode.Impulse);
-            projectileCloneTwo.AddForce(Vector3.up * sliderRight, ForceMode.Impulse);
-            projectileCloneThree.AddForce(Vector3.up * sliderRight, ForceMode.Impulse);
-            projectileCloneFour.AddForce(Vector3.up * sliderRight, ForceMode.Impulse);
-            projectileCloneFive.AddForce(Vector3.up * sliderRight, ForceMode.Impulse);
-            projectileCloneSix.AddForce(Vector3.up * sliderRight, ForceMode.Impulse);
-
-            projectileCloneSideWartsOne.AddForce(new Vector3(ForceSidewardsRightX, ForceSidewardsY, 0) * sliderRight, ForceMode.Impulse);
-            projectileCloneSideWartsTwo.AddForce(new Vector3(ForceSidewardsRightX, ForceSidewardsY, 0) * sliderRight, ForceMode.Impulse);
-            projectileCloneSideWartsThree.AddForce(new Vector3(ForceSidewardsRightX, ForceSidewardsY, 0) * sliderRight, ForceMode.Impulse);
-            projectileCloneSideWartsFour.AddForce(new Vector3(ForceSidewardsRightX, ForceSidewardsY, 0) * sliderRight, ForceMode.Impulse);
-            projectileCloneSideWartsFive.AddForce(new Vector3(ForceSidewardsRightX, ForceSidewardsY, 0) * sliderRight, ForceMode.Impulse);
-
-            StartCoroutine(destroyProjectile(projectileClone));
-            StartCoroutine(destroyProjectile(projectileCloneOne));
-            StartCoroutine(destroyProjectile(projectileCloneTwo));
-            StartCoroutine(destroyProjectile(projectileCloneThree));
-            StartCoroutine(destroyProjectile(projectileCloneFour));
-            StartCoroutine(destroyProjectile(projectileCloneFive));
-            StartCoroutine(destroyProjectile(projectileCloneSix));
-
-            StartCoroutine(destroyProjectile(projectileCloneSideWartsOne));
-            StartCoroutine(destroyProjectile(projectileCloneSideWartsTwo));
-            StartCoroutine(destroyProjectile(projectileCloneSideWartsThree));
-            StartCoroutine(destroyProjectile(projectileCloneSideWartsFour));
-            StartCoroutine(destroyProjectile(projectileCloneSideWartsFive));
-
-            bubbleClone = Instantiate(bubblePrefab, new Vector3(3.04f, -7.37f, -6.281f), transform.rotation) as Rigidbody;
-            bubbleCloneTwo = Instantiate(bubblePrefab, new Vector3(3.04f, -7.37f, -6.281f), transform.rotation) as Rigidbody;
-            bubbleCloneSidewards = Instantiate(bubblePrefab, new Vector3(5.98f, -6f, -6.281f), transform.rotation) as Rigidbody;
-            bubbleCloneSidewardsTwo = Instantiate(bubblePrefab, new Vector3(5.98f, -6f, -6.281f), transform.rotation) as Rigidbody;
-
-            StartCoroutine(destroyBubble(bubbleClone));
-            StartCoroutine(destroyBubble(bubbleCloneTwo));
-            StartCoroutine(destroyBubble(bubbleCloneSidewards));
-            StartCoroutine(destroyBubble(bubbleCloneSidewardsTwo));
+            for (int x = 0; x <= 7; x++)
+            {
+                projectileClone = Instantiate(projectile, new Vector3(x * 0.41f + 1.58f, -7.37f, -6.281f), transform.rotation) as Rigidbody;
+                projectileClone.AddForce(Vector3.up * sliderRight, ForceMode.Impulse);
+                StartCoroutine(destroyProjectile(projectileClone));
+                for (int y = 0; y < 1; y++)
+                {
+                    bubbleClone = Instantiate(bubblePrefab, new Vector3(y * 1 + 3.04f, -7.37f, -6.281f), transform.rotation) as Rigidbody;
+                    StartCoroutine(destroyBubble(bubbleClone));
+                    bubbleCloneSidewards = Instantiate(bubblePrefab, new Vector3(y * 1 + 5.98f, -6f, -6.281f), transform.rotation) as Rigidbody;
+                    StartCoroutine(destroyBubble(bubbleCloneSidewards));
+                }
+            }
+            for (int y = 0; y <= 4; y++)
+            {
+                projectileCloneSideWards = Instantiate(projectile, new Vector3(y * 0.41f + 5.59f, y * 0.41f - 6.5f, -6.281f), transform.rotation) as Rigidbody;
+                projectileCloneSideWards.AddForce(new Vector3(forceSidewardsRightX, forceSidewardsY, 0) * sliderRight, ForceMode.Impulse);
+                StartCoroutine(destroyProjectile(projectileCloneSideWards));
+            }
 
             sliderRight = 0;
         }
